@@ -15,7 +15,7 @@ class MyProjectView extends StatefulWidget {
 
 class _MyProjectViewState extends State<MyProjectView>
     with TickerProviderStateMixin {
-  late var tabControler;
+  late TabController tabControler;
   bool tab1 = true;
   bool tab2 = false;
   bool tab3 = false;
@@ -24,7 +24,35 @@ class _MyProjectViewState extends State<MyProjectView>
   void initState() {
     // TODO: implement initState
     super.initState();
-    tabControler = TabController(length: 3, vsync: this);
+    tabControler = TabController(
+      length: 3,
+      vsync: this,
+    );
+    tabControler.addListener(() {
+      if (tabControler.indexIsChanging) {
+        switch (tabControler.index) {
+          case 0:
+            tab1 = true;
+            tab2 = false;
+            tab3 = false;
+
+            break;
+          case 1:
+            tab2 = true;
+            tab1 = false;
+            tab3 = false;
+
+            break;
+          case 2:
+            tab3 = true;
+            tab1 = false;
+            tab2 = false;
+
+            break;
+        }
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -53,41 +81,80 @@ class _MyProjectViewState extends State<MyProjectView>
         ),
         bottom: TabBar(
             isScrollable: false,
-            onTap: (value) {
-              switch (value) {
-                case 0:
-                  tab1 = true;
-                  tab2 = false;
-                  tab3 = false;
+            // isScrollable: false,
+            // onTap: (value) {
+            //   switch (value) {
+            //     case 0:
+            //       tab1 = true;
+            //       tab2 = false;
+            //       tab3 = false;
 
-                  break;
-                case 1:
-                  tab2 = true;
-                  tab1 = false;
-                  tab3 = false;
+            //       break;
+            //     case 1:
+            //       tab2 = true;
+            //       tab1 = false;
+            //       tab3 = false;
 
-                  break;
-                case 2:
-                  tab3 = true;
-                  tab1 = false;
-                  tab2 = false;
+            //       break;
+            //     case 2:
+            //       tab3 = true;
+            //       tab1 = false;
+            //       tab2 = false;
 
-                  break;
+            //       break;
+            //   }
+            //   setState(() {});
+            // },
+            overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
+              if (states.contains(MaterialState.pressed)) {
+                return Colors.transparent;
+              } else {
+                return Colors.white;
               }
-              setState(() {});
-            },
+            }),
             controller: tabControler,
+            //indicatorPadding: EdgeInsets.all(5),
+            // labelColor: AppColors.whiteColor,
             indicatorColor: AppColors.whiteColor,
+            // indicatorSize: TabBarIndicatorSize.label,
             unselectedLabelColor: AppColors.blueColor,
+            // indicator: BoxDecoration(
+            //     borderRadius: BorderRadius.circular(20),
+            //     color: AppColors.blueColor),
             tabs: [
               Tab(
-                
+                  //     child: Container(
+                  //   decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(20),
+                  //       border: Border.all(color: AppColors.blueColor)),
+                  //   child: Center(
+                  //     child: Text("To-Do"),
+                  //   ),
+                  // )
                   child: TabBarContainer(
                       color: tab1 ? AppColors.blueColor : AppColors.whiteColor,
                       text: 'To-Do',
                       border: tab1
                           ? const Border()
                           : Border.all(color: AppColors.blueColor, width: 1))),
+              // Tab(
+              //     child: Container(
+              //   child: Center(
+              //     child: Text("To-Do"),
+              //   ),
+              //   decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(20),
+              //       border: Border.all(color: AppColors.blueColor)),
+              // )),
+              // Tab(
+              //     child: Container(
+              //   child: Center(
+              //     child: Text("To-Do"),
+              //   ),
+              //   decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(20),
+              //       border: Border.all(color: AppColors.blueColor)),
+              // ))
               Tab(
                   child: TabBarContainer(
                       color: tab2 ? AppColors.blueColor : AppColors.whiteColor,

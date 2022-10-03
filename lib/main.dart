@@ -10,13 +10,16 @@ import 'package:beta_tasker/view/notification_view.dart';
 import 'package:beta_tasker/view/practice.dart';
 import 'package:beta_tasker/view/recent_projects_view.dart';
 import 'package:beta_tasker/view/today_task_view.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
