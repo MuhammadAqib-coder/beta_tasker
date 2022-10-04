@@ -43,8 +43,7 @@ class Utils {
   }
 
   static displaySnackbar(context, message) {
-    var snackBar = SnackBar(content: message);
+    var snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-  
 }

@@ -8,6 +8,7 @@ import 'package:beta_tasker/data/network/network_auth_service.dart';
 import 'package:beta_tasker/images/icons/icon_image.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
 import 'package:beta_tasker/utils/utils.dart';
+import 'package:beta_tasker/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,7 +27,7 @@ class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
   var passControler = TextEditingController();
   var emailNode = FocusNode();
   var passNode = FocusNode();
-  var authProvider = NetworkAuthService();
+  var authViewModel = AuthViewModel();
   final _formkey = GlobalKey<FormState>();
 
   @override
@@ -97,11 +98,8 @@ class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
                   shadowColor: AppColors.roundButtonShadowColor,
                   onPressed: () {
                     if (_formkey.currentState!.validate()) {
-                      authProvider
-                          .signUpResponse(emailControler.text.trim(),
-                              passControler.text.trim())
-                          .then(
-                              (value) => Utils.displaySnackbar(context, value));
+                      authViewModel.emailPassSignup(emailControler.text.trim(),
+                          passControler.text.trim(), context);
                     }
                   }),
               SizedBox(

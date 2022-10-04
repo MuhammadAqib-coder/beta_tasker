@@ -6,6 +6,7 @@ import 'package:beta_tasker/images/icons/icon_image.dart';
 import 'package:beta_tasker/images/splash_image/splash_image.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
 import 'package:beta_tasker/view/create_account_view/signUp_email_password_view.dart';
+import 'package:beta_tasker/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,6 +18,7 @@ class SignupOptionView extends StatefulWidget {
 }
 
 class _SignupOptionViewState extends State<SignupOptionView> {
+  AuthViewModel _authViewModel = AuthViewModel();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +48,9 @@ class _SignupOptionViewState extends State<SignupOptionView> {
               color: AppColors.whiteColor,
               textColor: AppColors.blackColor,
               shadowColor: AppColors.whiteSmokeColor,
-              onPressed: () {}),
+              onPressed: () {
+                _authViewModel.googleSignup(context);
+              }),
           FixHeightWidth.height12,
           RoundButton(
               image: IconImage.fbIcon,
@@ -54,7 +58,9 @@ class _SignupOptionViewState extends State<SignupOptionView> {
               color: AppColors.whiteColor,
               textColor: AppColors.blackColor,
               shadowColor: AppColors.whiteSmokeColor,
-              onPressed: () {}),
+              onPressed: () {
+                _authViewModel.facebookSignup(context);
+              }),
           FixHeightWidth.height12,
           RoundButton(
               image: IconImage.appleIcon,

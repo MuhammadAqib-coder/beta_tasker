@@ -32,8 +32,10 @@ dependencies:
   firebase_core: ^1.23.0
   flutter:
     sdk: flutter
+  flutter_facebook_auth: ^4.4.1+1
   flutter_screenutil: ^5.5.4
   google_fonts: ^3.0.1
+  google_sign_in: ^5.4.2
   image_picker: ^0.8.5+3
   image_stack: ^2.1.1
   smooth_page_indicator: ^1.0.0+2
