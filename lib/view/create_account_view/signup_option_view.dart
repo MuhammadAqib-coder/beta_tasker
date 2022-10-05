@@ -22,6 +22,7 @@ class _SignupOptionViewState extends State<SignupOptionView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: EdgeInsets.only(
           top: 50.h,
@@ -48,8 +49,8 @@ class _SignupOptionViewState extends State<SignupOptionView> {
               color: AppColors.whiteColor,
               textColor: AppColors.blackColor,
               shadowColor: AppColors.whiteSmokeColor,
-              onPressed: () {
-                _authViewModel.googleSignup(context);
+              onPressed: () async{
+                await _authViewModel.googleSignup(context);
               }),
           FixHeightWidth.height12,
           RoundButton(
@@ -58,8 +59,8 @@ class _SignupOptionViewState extends State<SignupOptionView> {
               color: AppColors.whiteColor,
               textColor: AppColors.blackColor,
               shadowColor: AppColors.whiteSmokeColor,
-              onPressed: () {
-                _authViewModel.facebookSignup(context);
+              onPressed: ()async {
+                await _authViewModel.facebookSignup(context);
               }),
           FixHeightWidth.height12,
           RoundButton(
@@ -113,7 +114,7 @@ class _SignupOptionViewState extends State<SignupOptionView> {
                   fontWeight: FontWeight.w500),
               TextButton(
                   onPressed: () {
-                    Navigator.popAndPushNamed(context, RoutesName.signinView);
+                    Navigator.pushNamed(context, RoutesName.signinView);
                   },
                   child: CustomText(
                     text: 'SignIn',

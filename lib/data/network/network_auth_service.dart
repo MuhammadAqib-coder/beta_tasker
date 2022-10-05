@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:beta_tasker/data/app_exception.dart';
 import 'package:beta_tasker/data/network/basic_auth_service.dart';
-import 'package:beta_tasker/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -14,12 +13,14 @@ class NetworkAuthService extends BasicAuthService {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      //throw SigninSignupException('successfully Login');
+      // throw SigninSignupException('successfully Login');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         throw UnauthorizedException('user not registered');
       } else if (e.code == 'wrong-password') {
         throw InvalidInputException('wrong password');
+      } else if (e.code == 'invalid-email') {
+        throw SigninSignupException('invalid email');
       } else {
         throw SigninSignupException(e.message);
       }
@@ -35,12 +36,14 @@ class NetworkAuthService extends BasicAuthService {
           .createUserWithEmailAndPassword(email: email, password: password);
       //signout the user when signup
       await FirebaseAuth.instance.signOut();
-      throw SigninSignupException('successfully signup');
+      //  throw SigninSignupException('successfully signup');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         throw SigninSignupException('weak password');
       } else if (e.code == 'email-already-in-use') {
         throw SigninSignupException('user already registered');
+      } else if (e.code == 'invalid-email') {
+        throw SigninSignupException('invalid email');
       } else {
         throw SigninSignupException('No Internet Connection');
       }
@@ -69,7 +72,8 @@ class NetworkAuthService extends BasicAuthService {
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
     try {
       await FirebaseAuth.instance.signInWithCredential(credential);
-      throw SigninSignupException('Successfuly Signed up');
+      // await FirebaseAuth.instance.signOut();
+      //throw SigninSignupException('Successfuly Signed up');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'account-exist-with-different-credential') {
         throw SigninSignupException(
@@ -87,12 +91,20 @@ class NetworkAuthService extends BasicAuthService {
   @override
   Future<void> facebookSignup() async {
     LoginResult loginResult;
+    OAuthCredential facebookCredential;
     try {
       loginResult = await FacebookAuth.instance.login();
-      OAuthCredential facebookCredential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.token);
-      await FirebaseAuth.instance.signInWithCredential(facebookCredential);
+      if (loginResult.status == LoginStatus.success) {
+        facebookCredential =
+            FacebookAuthProvider.credential(loginResult.accessToken!.token);
+        await FirebaseAuth.instance.signInWithCredential(facebookCredential);
+
+        // await FacebookAuth.instance.logOut();
+      }
+      //throw SigninSignupException('succesfully login');
     } on FirebaseAuthException catch (e) {
+      throw SigninSignupException(e.toString());
+    } on PlatformException catch (e) {
       throw SigninSignupException(e.toString());
     }
   }

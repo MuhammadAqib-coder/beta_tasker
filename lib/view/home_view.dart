@@ -1,9 +1,11 @@
+import 'package:beta_tasker/core/app_colors.dart';
 import 'package:beta_tasker/core/common_widgets/common_app_bar.dart';
 import 'package:beta_tasker/core/common_widgets/project_task_row.dart';
 import 'package:beta_tasker/core/common_widgets/recent_projects.dart';
 import 'package:beta_tasker/core/common_widgets/search_field.dart';
 import 'package:beta_tasker/core/common_widgets/task.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,6 +23,21 @@ class _HomeViewState extends State<HomeView> {
     return SafeArea(
         child: Scaffold(
       appBar: CommonAppBar(
+        action: PopupMenuButton(
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(child: Text('notification')),
+                PopupMenuItem(
+                    onTap: () {
+                      FirebaseAuth.instance.signOut();
+                    },
+                    child: Text('Logout'))
+              ];
+            },
+            icon: const Icon(
+              Icons.more_vert,
+              color: AppColors.blackColor,
+            )),
         title: 'Beta Tasker',
         image: 'image',
       ),

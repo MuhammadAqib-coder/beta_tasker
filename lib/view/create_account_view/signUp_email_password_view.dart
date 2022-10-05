@@ -4,12 +4,12 @@ import 'package:beta_tasker/core/common_widgets/custom_text.dart';
 import 'package:beta_tasker/core/common_widgets/fix_height_width.dart';
 import 'package:beta_tasker/core/common_widgets/round_button.dart';
 import 'package:beta_tasker/core/common_widgets/round_textfield.dart';
-import 'package:beta_tasker/data/network/network_auth_service.dart';
 import 'package:beta_tasker/images/icons/icon_image.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
 import 'package:beta_tasker/utils/utils.dart';
 import 'package:beta_tasker/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignupEmailPasswordView extends StatefulWidget {
@@ -29,6 +29,16 @@ class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
   var passNode = FocusNode();
   var authViewModel = AuthViewModel();
   final _formkey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor:
+            AppColors.whiteColor, //or set color with: Color(0xFF0000FF)
+        statusBarIconBrightness: Brightness.dark));
+  }
 
   @override
   Widget build(BuildContext context) {

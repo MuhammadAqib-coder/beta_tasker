@@ -7,7 +7,9 @@ import 'package:beta_tasker/core/common_widgets/round_textfield.dart';
 import 'package:beta_tasker/images/icons/icon_image.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
 import 'package:beta_tasker/utils/utils.dart';
+import 'package:beta_tasker/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SigninView extends StatefulWidget {
@@ -24,18 +26,28 @@ class _SigninViewState extends State<SigninView> {
   var passControler = TextEditingController();
   var emailNode = FocusNode();
   var passNode = FocusNode();
+  final _authViewModel = AuthViewModel();
 
-  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        statusBarColor:
+            AppColors.whiteColor, //or set color with: Color(0xFF0000FF)
+        statusBarIconBrightness: Brightness.dark));
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CommonAppBar(
           title: 'Login To Your Account',
           icon: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.popAndPushNamed(context, RoutesName.signupOptionView);
             },
             icon: const Icon(Icons.arrow_back),
             color: AppColors.blackColor,
@@ -91,8 +103,11 @@ class _SigninViewState extends State<SigninView> {
                 color: AppColors.blueColor,
                 textColor: AppColors.whiteColor,
                 shadowColor: AppColors.roundButtonShadowColor,
-                onPressed: () {
-                  Navigator.popAndPushNamed(context, RoutesName.landingView);
+                onPressed: () async {
+                  await _authViewModel.emailPassLogin(
+                      emailControler.text.trim(),
+                      passControler.text.trim(),
+                      context);
                 }),
             SizedBox(
               height: 10.h,

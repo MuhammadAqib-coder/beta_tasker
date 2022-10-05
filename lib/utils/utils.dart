@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:beta_tasker/core/common_widgets/custom_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,7 +44,15 @@ class Utils {
   }
 
   static displaySnackbar(context, message) {
-    var snackBar = SnackBar(content: Text(message));
+    var snackBar = SnackBar(
+      content: CustomText(
+        text: message,
+        fontSize: 16.sp,
+        fontWeight: FontWeight.bold,
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: AppColors.roundButtonDarkColor,
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
