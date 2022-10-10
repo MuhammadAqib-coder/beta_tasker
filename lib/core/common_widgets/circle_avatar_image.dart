@@ -20,7 +20,7 @@ class CircleAvatarImage extends StatefulWidget {
 class _CircleAvatarImageState extends State<CircleAvatarImage> {
   File? image;
 
-  var showImage = false;
+  var showImage = ValueNotifier<bool>(false);
 
   @override
   Widget build(BuildContext context) {
@@ -31,25 +31,30 @@ class _CircleAvatarImageState extends State<CircleAvatarImage> {
         clipBehavior: Clip.none,
         fit: StackFit.expand,
         children: [
-          showImage
-              ? CircleAvatar(
-                  backgroundImage: FileImage(File(image!.path).absolute))
-              : const CircleAvatar(
-                  backgroundColor: AppColors.avatarColor,
-                ),
+          ValueListenableBuilder<bool>(
+            valueListenable: showImage,
+            builder: (_, value, child) {
+              return value
+                  ? CircleAvatar(
+                      backgroundColor: AppColors.avatarColor,
+                      backgroundImage: FileImage(File(image!.path).absolute))
+                  : const CircleAvatar(
+                      backgroundColor: AppColors.avatarColor,
+                    );
+            },
+          ),
           Positioned(
               bottom: 10,
               right: 5,
               child: InkWell(
                 onTap: () async {
-                  showImage = false;
+                  showImage.value = false;
                   image = await Utils.getImage(context);
                   if (image!.path.isEmpty) {
                   } else {
                     //image setting is not cleared
-                    //use provider 
-                    showImage = !showImage;
-                    setState(() {});
+                    //use provider
+                    showImage.value = !showImage.value;
                   }
                 },
                 child: Container(

@@ -36,7 +36,9 @@ class _LandingViewState extends State<LandingView> {
       appBar: AppBar(
           toolbarHeight: 0.sp,
           elevation: 0.sp,
-          systemOverlayStyle: SystemUiOverlayStyle.dark),
+          systemOverlayStyle: SystemUiOverlayStyle(
+              statusBarIconBrightness: Brightness.dark,
+              statusBarColor: AppColors.whiteColor)),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: AppColors.whiteColor,

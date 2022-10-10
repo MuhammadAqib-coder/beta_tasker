@@ -28,54 +28,56 @@ class RoundTextField extends StatefulWidget {
 }
 
 class _RoundTextFieldState extends State<RoundTextField> {
-  var fillColor = AppColors.roundTextfieldBColor;
+  var fillColor = ValueNotifier<Color>(AppColors.roundTextfieldBColor);
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 50.h,
-      child: TextFormField(
-        onTap: () {
-          widget.node.addListener(() {
-            if (widget.node.hasFocus) {
-              setState(() {
-                fillColor = AppColors.textFieldFocusColor;
+      child: ValueListenableBuilder<Color>(
+        valueListenable: fillColor,
+        builder: (_, value, child) {
+          return TextFormField(
+            onTap: () {
+              widget.node.addListener(() {
+                if (widget.node.hasFocus) {
+                  fillColor.value = AppColors.textFieldFocusColor;
+                } else {
+                  fillColor.value = AppColors.roundTextfieldBColor;
+                }
               });
-            } else {
-              setState(() {
-                fillColor = AppColors.roundTextfieldBColor;
-              });
-            }
-          });
-        },
-        cursorColor: AppColors.blackColor,
-        obscuringCharacter: "*",
-        obscureText: widget.obsecure!,
-        focusNode: widget.node,
-        controller: widget.controller,
-        decoration: InputDecoration(
-            suffixIcon: widget.suffixIcon,
-            prefixIcon: widget.prefixIcon,
-            hintText: widget.hintText,
-            hintStyle: TextStyle(color: AppColors.hintColor, fontSize: 14.sp),
-            filled: true,
-            fillColor: fillColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(50.r),
-              borderSide: BorderSide.none,
-            ),
-            focusColor: AppColors.blueColor,
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(50.r),
-                borderSide: const BorderSide(color: AppColors.blueColor)),
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w)),
-        onFieldSubmitted: widget.onFieldSubmitted,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'please filled the field';
-          } else {
-            return null;
-          }
+            },
+            cursorColor: AppColors.blackColor,
+            obscuringCharacter: "*",
+            obscureText: widget.obsecure!,
+            focusNode: widget.node,
+            controller: widget.controller,
+            decoration: InputDecoration(
+                suffixIcon: widget.suffixIcon,
+                prefixIcon: widget.prefixIcon,
+                hintText: widget.hintText,
+                hintStyle:
+                    TextStyle(color: AppColors.hintColor, fontSize: 14.sp),
+                filled: true,
+                fillColor: value,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(50.r),
+                  borderSide: BorderSide.none,
+                ),
+                focusColor: AppColors.blueColor,
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(50.r),
+                    borderSide: const BorderSide(color: AppColors.blueColor)),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w)),
+            onFieldSubmitted: widget.onFieldSubmitted,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'please filled the field';
+              } else {
+                return null;
+              }
+            },
+          );
         },
       ),
     );

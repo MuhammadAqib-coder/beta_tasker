@@ -33,9 +33,11 @@ class NetworkAuthService extends BasicAuthService {
   Future signUpResponse(String email, String password) async {
     try {
       await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) async {
+        await FirebaseAuth.instance.signOut();
+      });
       //signout the user when signup
-      await FirebaseAuth.instance.signOut();
       //  throw SigninSignupException('successfully signup');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -72,6 +74,7 @@ class NetworkAuthService extends BasicAuthService {
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
     try {
       await FirebaseAuth.instance.signInWithCredential(credential);
+
       // await FirebaseAuth.instance.signOut();
       //throw SigninSignupException('Successfuly Signed up');
     } on FirebaseAuthException catch (e) {
@@ -106,6 +109,21 @@ class NetworkAuthService extends BasicAuthService {
       throw SigninSignupException(e.toString());
     } on PlatformException catch (e) {
       throw SigninSignupException(e.toString());
+    }
+  }
+
+  @override
+  Future<void> resetPassword(String email) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        throw SigninSignupException('invalid Email');
+      } else if (e.code == 'user-not-found') {
+        throw SigninSignupException('no user with this email');
+      } else {
+        throw SigninSignupException(e.toString());
+      }
     }
   }
 }

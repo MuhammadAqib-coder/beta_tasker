@@ -35,4 +35,12 @@ class AuthRepo {
       rethrow;
     }
   }
+
+  Future resetPassword(String email) async {
+    try {
+      await _service.resetPassword(email);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

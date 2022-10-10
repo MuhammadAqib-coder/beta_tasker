@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../core/common_widgets/round_social_button.dart';
+
 class SignupEmailPasswordView extends StatefulWidget {
   const SignupEmailPasswordView({Key? key}) : super(key: key);
 
@@ -21,8 +23,8 @@ class SignupEmailPasswordView extends StatefulWidget {
 }
 
 class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
-  bool hidePassword = true;
-  bool checkboxValue = false;
+  var hidePassword = ValueNotifier<bool>(true);
+  var checkboxValue = ValueNotifier<bool>(false);
   var emailControler = TextEditingController();
   var passControler = TextEditingController();
   var emailNode = FocusNode();
@@ -34,21 +36,23 @@ class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor:
-            AppColors.whiteColor, //or set color with: Color(0xFF0000FF)
-        statusBarIconBrightness: Brightness.dark));
   }
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //     statusBarColor:
+    //         AppColors.whiteColor, //or set color with: Color(0xFF0000FF)
+    //     statusBarIconBrightness: Brightness.dark));
+
+    var _authViewModel = AuthViewModel();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CommonAppBar(
           title: 'Create Your Account',
           icon: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.popAndPushNamed(context, RoutesName.signupOptionView);
             },
             icon: const Icon(Icons.arrow_back),
             color: AppColors.blackColor,
@@ -68,33 +72,38 @@ class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
                   hintText: 'Email',
                   controller: emailControler),
               FixHeightWidth.height15,
-              RoundTextField(
-                  prefixIcon: const Icon(Icons.lock),
-                  obsecure: hidePassword,
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        hidePassword = !hidePassword;
-                      });
-                    },
-                    icon: Icon(
-                        hidePassword ? Icons.visibility_off : Icons.visibility),
-                  ),
-                  node: passNode,
-                  hintText: 'password',
-                  controller: passControler),
+              ValueListenableBuilder<bool>(
+                valueListenable: hidePassword,
+                builder: (_, value, child) {
+                  return RoundTextField(
+                      prefixIcon: const Icon(Icons.lock),
+                      obsecure: value,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          hidePassword.value = !hidePassword.value;
+                        },
+                        icon: Icon(
+                            value ? Icons.visibility_off : Icons.visibility),
+                      ),
+                      node: passNode,
+                      hintText: 'password',
+                      controller: passControler);
+                },
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Checkbox(
-                    value: checkboxValue,
-                    onChanged: (value) {
-                      setState(() {
-                        checkboxValue = value!;
-                      });
-                    },
-                    side: BorderSide(color: Colors.blue, width: 2.w),
-                  ),
+                  ValueListenableBuilder<bool>(
+                      valueListenable: checkboxValue,
+                      builder: (_, value, child) {
+                        return Checkbox(
+                          value: value,
+                          onChanged: (bValue) {
+                            checkboxValue.value = bValue!;
+                          },
+                          side: BorderSide(color: Colors.blue, width: 2.w),
+                        );
+                      }),
                   const Text('Remember Me'),
                 ],
               ),
@@ -138,27 +147,22 @@ class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  IconButton(
-                      onPressed: () {},
-                      icon: Image.asset(
-                        IconImage.fbIcon,
-                        height: 22.h,
-                        width: 22.w,
-                      )),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Image.asset(
-                        IconImage.googleIcon,
-                        height: 22.h,
-                        width: 22.w,
-                      )),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Image.asset(
-                        IconImage.appleIcon,
-                        height: 22.h,
-                        width: 22.w,
-                      )),
+                  RoundSocialButton(
+                    onPressed: () async{
+                      await _authViewModel.facebookSignup(context);
+                    },
+                    image: IconImage.fbIcon,
+                  ),
+                  RoundSocialButton(
+                    onPressed: () async{
+                      await _authViewModel.googleSignup(context);
+                    },
+                    image: IconImage.googleIcon,
+                  ),
+                  RoundSocialButton(
+                    onPressed: () {},
+                    image: IconImage.appleIcon,
+                  )
                 ],
               ),
               SizedBox(

@@ -1,5 +1,6 @@
 import 'package:beta_tasker/core/common_widgets/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../images/splash_image/splash_image.dart';
@@ -18,6 +19,9 @@ class CommonAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: AppColors.whiteColor),
       automaticallyImplyLeading: false,
       elevation: 0,
       backgroundColor: Colors.transparent,

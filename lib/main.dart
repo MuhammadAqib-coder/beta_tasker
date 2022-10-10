@@ -1,25 +1,12 @@
 import 'package:beta_tasker/core/app_colors.dart';
-import 'package:beta_tasker/core/common_widgets/recent_projects.dart';
 import 'package:beta_tasker/utils/routes/routes.dart';
-import 'package:beta_tasker/utils/routes/routes_name.dart';
 import 'package:beta_tasker/view/create_account_view/signup_option_view.dart';
-import 'package:beta_tasker/view/home_view.dart';
-import 'package:beta_tasker/view/introduction_view.dart';
 import 'package:beta_tasker/view/landing_view.dart';
-import 'package:beta_tasker/view/my_project_view.dart';
-import 'package:beta_tasker/view/notification_view.dart';
-import 'package:beta_tasker/view/practice.dart';
-import 'package:beta_tasker/view/recent_projects_view.dart';
-import 'package:beta_tasker/view/signin_view.dart';
-import 'package:beta_tasker/view/today_task_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,25 +38,24 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     //to change the color of status bar
 
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor:
-            AppColors.whiteColor, //or set color with: Color(0xFF0000FF)
-        statusBarIconBrightness: Brightness.dark));
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //     statusBarColor:
+    //         AppColors.whiteColor, //or set color with: Color(0xFF0000FF)
+    //     statusBarIconBrightness: Brightness.dark));
     return ScreenUtilInit(
       minTextAdapt: true,
       splitScreenMode: true,
       designSize: const Size(360, 679),
-      child: StreamBuilder(
-
+      child: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
               body: Center(
                 child: SpinKitFadingCircle(
-                color: AppColors.roundButtonDarkColor,
-                controller: _controller,
-              ),
+                  color: AppColors.roundButtonDarkColor,
+                  controller: _controller,
+                ),
               ),
             );
           } else if (snapshot.hasData) {
@@ -86,7 +72,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          // initialRoute: RoutesName.introView,
+          // initialRoute: RoutesName.signupOptionView,
           onGenerateRoute: Routes.generateRoute,
           home: child,
         );

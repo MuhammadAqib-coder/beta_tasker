@@ -1,6 +1,8 @@
 import 'package:beta_tasker/core/common_widgets/common_app_bar.dart';
 import 'package:beta_tasker/core/common_widgets/round_button.dart';
 import 'package:beta_tasker/core/common_widgets/round_textfield.dart';
+import 'package:beta_tasker/view_model/auth_view_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -20,7 +22,16 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonAppBar( title: 'Forget Password'),
+      appBar: CommonAppBar(
+          title: 'Forget Password',
+          icon: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back,
+                color: AppColors.blackColor,
+              ))),
       body: Center(
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
@@ -45,6 +56,7 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
               Form(
                 key: _formKey,
                 child: RoundTextField(
+                  prefixIcon: const Icon(Icons.alternate_email),
                   node: emailNode,
                   hintText: 'Email',
                   controller: _emailControler,
@@ -55,8 +67,11 @@ class _ForgetPasswordViewState extends State<ForgetPasswordView> {
                   color: AppColors.roundButtonDarkColor,
                   textColor: AppColors.whiteColor,
                   shadowColor: AppColors.roundButtonShadowColor,
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      AuthViewModel()
+                          .resetPassword(_emailControler.text.trim(), context);
+                    }
                   })
             ],
           ),

@@ -98,7 +98,7 @@ class _SignupOptionViewState extends State<SignupOptionView> {
               textColor: AppColors.whiteColor,
               title: 'SignUp With Email',
               onPressed: () {
-                Navigator.pushNamed(
+                Navigator.popAndPushNamed(
                     context, RoutesName.signupEmailPasswordView);
               }),
           SizedBox(
