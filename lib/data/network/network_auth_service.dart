@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:beta_tasker/data/app_exception.dart';
 import 'package:beta_tasker/data/network/basic_auth_service.dart';
+import 'package:beta_tasker/view/create_account_view/signup_option_view.dart';
+import 'package:beta_tasker/view/landing_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -126,4 +129,14 @@ class NetworkAuthService extends BasicAuthService {
       }
     }
   }
+
+  // static Widget get homeScreen {
+  //   Widget screen = SignupOptionView();
+  //   FirebaseAuth.instance.authStateChanges().listen((event) {
+  //     if (event != null) {
+  //       screen = LandingView();
+  //     }
+  //   });
+  //   return screen;
+  // }
 }

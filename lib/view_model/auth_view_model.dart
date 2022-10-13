@@ -16,7 +16,7 @@ class AuthViewModel {
   Future emailPassSignup(String email, String password, context) async {
     await _repo.emailPassSignup(email, password).then((value) {
       Utils.displaySnackbar(context, 'Successfully SignUp');
-      Navigator.pushNamed(context, RoutesName.signinView);
+      // Navigator.pushNamed(context, RoutesName.signinView);
     }).onError((error, stackTrace) =>
         Utils.displaySnackbar(context, error.toString()));
   }

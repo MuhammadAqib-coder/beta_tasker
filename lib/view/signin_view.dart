@@ -48,7 +48,7 @@ class _SigninViewState extends State<SigninView> {
           title: 'Login To Your Account',
           icon: IconButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, RoutesName.signupOptionView);
+              Navigator.pop(context);
             },
             icon: const Icon(Icons.arrow_back),
             color: AppColors.blackColor,
@@ -187,7 +187,7 @@ class _SigninViewState extends State<SigninView> {
                       fontWeight: FontWeight.w600),
                   TextButton(
                       onPressed: () {
-                        Navigator.popAndPushNamed(
+                        Navigator.pushNamed(
                             context, RoutesName.signupEmailPasswordView);
                       },
                       child: CustomText(

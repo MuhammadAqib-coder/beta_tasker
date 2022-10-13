@@ -1,9 +1,13 @@
 import 'dart:io';
 
 import 'package:beta_tasker/core/common_widgets/custom_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -29,18 +33,47 @@ class Utils {
     );
   }
 
-  static Future<File> getImage(context) async {
-    File? image;
+  static Future<String> getImage(context) async {
+    //File? image;
+    var storage = FirebaseStorage.instance;
+    var fileName = FirebaseAuth.instance.currentUser!.uid;
+    String image = '';
     try {
       final pickFile = await ImagePicker()
           .pickImage(source: ImageSource.gallery, imageQuality: 80);
       if (pickFile != null) {
-        image = File(pickFile.path);
+        showDialog(
+            context: context,
+            builder: (_) {
+              return Center(
+                child: CustomText(
+                  color: AppColors.whiteColor,
+                  text: "Please wait...",
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            });
+        image = pickFile.path;
+        await storage.ref('ProfileImage/$fileName').putFile(File(image));
+
+        await storage
+            .ref('ProfileImage/$fileName')
+            .getDownloadURL()
+            .then((value) async {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .update({'image_url': value});
+        });
+        Navigator.of(context, rootNavigator: true).pop();
       }
+    } on FirebaseException catch (e) {
+      displaySnackbar(context, e.toString());
     } catch (e) {
       displaySnackbar(context, e.toString());
     }
-    return image!;
+    return image;
   }
 
   static displaySnackbar(context, message) {

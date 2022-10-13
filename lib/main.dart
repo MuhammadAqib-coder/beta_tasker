@@ -1,7 +1,10 @@
 import 'package:beta_tasker/core/app_colors.dart';
+import 'package:beta_tasker/data/network/network_auth_service.dart';
 import 'package:beta_tasker/utils/routes/routes.dart';
 import 'package:beta_tasker/view/create_account_view/signup_option_view.dart';
 import 'package:beta_tasker/view/landing_view.dart';
+import 'package:beta_tasker/view/practice.dart';
+import 'package:beta_tasker/view/signin_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +33,8 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 3));
+        AnimationController(vsync: this, duration: Duration(seconds: 3))
+          ..repeat();
   }
 
   // This widget is the root of your application.
@@ -46,25 +50,26 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       minTextAdapt: true,
       splitScreenMode: true,
       designSize: const Size(360, 679),
-      child: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              body: Center(
-                child: SpinKitFadingCircle(
-                  color: AppColors.roundButtonDarkColor,
-                  controller: _controller,
-                ),
-              ),
-            );
-          } else if (snapshot.hasData) {
-            return const LandingView();
-          } else {
-            return const SignupOptionView();
-          }
-        },
-      ),
+      child: Practice(),
+      //  StreamBuilder<User?>(
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, snapshot) {
+      //     if (snapshot.connectionState == ConnectionState.waiting) {
+      //       return Scaffold(
+      //         body: Center(
+      //           child: SpinKitFadingCircle(
+      //             color: AppColors.roundButtonDarkColor,
+      //             controller: _controller,
+      //           ),
+      //         ),
+      //       );
+      //     } else if (snapshot.hasData) {
+      //       return const LandingView();
+      //     } else {
+      //       return const SignupOptionView();
+      //     }
+      //   },
+      // ),
       builder: (context, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,

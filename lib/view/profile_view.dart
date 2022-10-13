@@ -4,8 +4,10 @@ import 'package:beta_tasker/core/common_widgets/common_app_bar.dart';
 import 'package:beta_tasker/core/common_widgets/fix_height_width.dart';
 import 'package:beta_tasker/core/common_widgets/round_button.dart';
 import 'package:beta_tasker/core/common_widgets/round_textfield.dart';
+import 'package:beta_tasker/data/network/cloud_data_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../utils/utils.dart';
 
@@ -16,7 +18,8 @@ class ProfileView extends StatefulWidget {
   State<ProfileView> createState() => _ProfileViewState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
+class _ProfileViewState extends State<ProfileView>
+    with TickerProviderStateMixin {
   var nameControler = TextEditingController();
   var userControler = TextEditingController();
   var dateControler = TextEditingController();
@@ -31,16 +34,32 @@ class _ProfileViewState extends State<ProfileView> {
   var phoneNode = FocusNode();
   var roleNode = FocusNode();
 
-  var _nameColor = AppColors.roundTextfieldBColor;
-  var _userColor = AppColors.roundTextfieldBColor;
-  var _dateColor = AppColors.roundTextfieldBColor;
-  var _emailColor = AppColors.roundTextfieldBColor;
-  var _phoneColor = AppColors.roundTextfieldBColor;
-  var _roleColor = AppColors.roundTextfieldBColor;
+  // var _nameColor = AppColors.roundTextfieldBColor;
+  // var _userColor = AppColors.roundTextfieldBColor;
+  // var _dateColor = AppColors.roundTextfieldBColor;
+  // var _emailColor = AppColors.roundTextfieldBColor;
+  // var _phoneColor = AppColors.roundTextfieldBColor;
+  // var _roleColor = AppColors.roundTextfieldBColor;
 
   final _formKey = GlobalKey<FormState>();
 
-  
+  String url = '';
+  late AnimationController _controller;
+  bool shimmmerAffect = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 3))
+          ..repeat();
+    getData();
+  }
+
+  getData() async {
+    url = await CloudDataService.createUserData();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +80,9 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatarImage(),
+                  CircleAvatarImage(
+                    imagePath: url,
+                  ),
                   FixHeightWidth.height12,
                   RoundTextField(
                     // fillColor: _nameColor,
@@ -124,8 +145,33 @@ class _ProfileViewState extends State<ProfileView> {
                       color: AppColors.roundButtonDarkColor,
                       textColor: AppColors.whiteColor,
                       shadowColor: AppColors.roundButtonShadowColor,
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          showDialog(
+                              useSafeArea: true,
+                              context: context,
+                              builder: (_) {
+                                return Center(
+                                  child: SpinKitFadingCircle(
+                                    color: AppColors.whiteColor,
+                                    controller: _controller,
+                                  ),
+                                );
+                              });
+                          await CloudDataService.insertData(
+                                  nameControler.text.trim(),
+                                  userControler.text.trim(),
+                                  dateControler.text.trim(),
+                                  emailControler.text.trim(),
+                                  phoneControler.text.trim(),
+                                  roleControler.text.trim())
+                              .then((value) {
+                            Navigator.of(context, rootNavigator: true).pop();
+                            Utils.displaySnackbar(
+                                context, 'Data saved successfully');
+                          });
+                          //_formKey.currentState!.reset();
+                        }
                       })
                 ],
               ),
@@ -134,5 +180,12 @@ class _ProfileViewState extends State<ProfileView> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
   }
 }

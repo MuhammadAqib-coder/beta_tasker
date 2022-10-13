@@ -114,7 +114,7 @@ class _SignupOptionViewState extends State<SignupOptionView> {
                   fontWeight: FontWeight.w500),
               TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, RoutesName.signinView);
+                    Navigator.popAndPushNamed(context, RoutesName.signinView);
                   },
                   child: CustomText(
                     text: 'SignIn',

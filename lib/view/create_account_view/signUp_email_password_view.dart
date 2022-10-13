@@ -52,7 +52,7 @@ class _SignupEmailPasswordViewState extends State<SignupEmailPasswordView> {
           title: 'Create Your Account',
           icon: IconButton(
             onPressed: () {
-              Navigator.popAndPushNamed(context, RoutesName.signupOptionView);
+              Navigator.popAndPushNamed(context,RoutesName.signinView);
             },
             icon: const Icon(Icons.arrow_back),
             color: AppColors.blackColor,
