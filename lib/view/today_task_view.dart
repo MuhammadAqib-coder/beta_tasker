@@ -2,6 +2,7 @@ import 'package:beta_tasker/core/app_colors.dart';
 import 'package:beta_tasker/core/common_widgets/common_app_bar.dart';
 import 'package:beta_tasker/core/common_widgets/fix_height_width.dart';
 import 'package:beta_tasker/core/common_widgets/task.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -45,13 +46,29 @@ class _TodayTaskViewState extends State<TodayTaskView> {
               //     style: 'inter'),
               FixHeightWidth.height15,
               Expanded(
-                child: ListView.builder(
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 24.w, bottom: 14.h),
-                      child: const Task(),
-                    );
+                child: StreamBuilder<QuerySnapshot>(
+                  stream:
+                      FirebaseFirestore.instance.collection('tasks').snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 8.h),
+                            child: Task(
+                              date: snapshot.data!.docs[index]['date'],
+                              time: snapshot.data!.docs[index]['time'],
+                              title: snapshot.data!.docs[index]['title'],
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
                   },
                 ),
               )

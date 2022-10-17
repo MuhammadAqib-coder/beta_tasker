@@ -14,5 +14,6 @@ class IconImage {
   static const googleIcon = "${iconUrl}google.png";
   static const fbIcon = "${iconUrl}fb.png";
   static const messageIcon = "${iconUrl}message.png";
-
+  static const priorityIcon = "${iconUrl}priority.png";
+  static const senIcon = "${iconUrl}send.png";
 }

@@ -5,6 +5,7 @@ import 'package:beta_tasker/core/common_widgets/recent_projects.dart';
 import 'package:beta_tasker/core/common_widgets/search_field.dart';
 import 'package:beta_tasker/core/common_widgets/task.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -87,14 +88,30 @@ class _HomeViewState extends State<HomeView> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 22.w),
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 8.h),
-                  child: Task(),
-                );
+            child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('tasks').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 22.w),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 8.h),
+                        child: Task(
+                          date: snapshot.data!.docs[index]['date'],
+                          time: snapshot.data!.docs[index]['time'],
+                          title: snapshot.data!.docs[index]['title'],
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
               },
             ),
           )

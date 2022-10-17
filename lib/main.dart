@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 void main() async {
@@ -50,28 +51,32 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       minTextAdapt: true,
       splitScreenMode: true,
       designSize: const Size(360, 679),
-      child: Practice(),
-      //  StreamBuilder<User?>(
-      //   stream: FirebaseAuth.instance.authStateChanges(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.waiting) {
-      //       return Scaffold(
-      //         body: Center(
-      //           child: SpinKitFadingCircle(
-      //             color: AppColors.roundButtonDarkColor,
-      //             controller: _controller,
-      //           ),
-      //         ),
-      //       );
-      //     } else if (snapshot.hasData) {
-      //       return const LandingView();
-      //     } else {
-      //       return const SignupOptionView();
-      //     }
-      //   },
-      // ),
+      child: //Practice(),
+       StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              body: Center(
+                child: SpinKitFadingCircle(
+                  color: AppColors.roundButtonDarkColor,
+                  controller: _controller,
+                ),
+              ),
+            );
+          } else if (snapshot.hasData) {
+            return const LandingView();
+          } else {
+            return const SignupOptionView();
+          }
+        },
+      ),
       builder: (context, child) {
         return MaterialApp(
+          // navigatorObservers: [FlutterSmartDialog.observer],
+          // builder: FlutterSmartDialog.init(
+
+          // ),
           debugShowCheckedModeBanner: false,
           title: 'Beta Tasker',
           theme: ThemeData(

@@ -6,12 +6,16 @@ import 'package:beta_tasker/view/my_project_view.dart';
 import 'package:beta_tasker/view/profile_view.dart';
 import 'package:beta_tasker/view/recent_projects_view.dart';
 import 'package:beta_tasker/view/today_task_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
+import '../core/common_widgets/custom_text.dart';
 import 'notification_view.dart';
 
 class LandingView extends StatefulWidget {
@@ -22,6 +26,13 @@ class LandingView extends StatefulWidget {
 }
 
 class _LandingViewState extends State<LandingView> {
+  var titleControler = TextEditingController();
+  var descriptionConreoler = TextEditingController();
+  //String priorityText = '';
+  var titleNode = FocusNode();
+  var isVisible = ValueNotifier<bool>(false);
+  var priorityText = ValueNotifier<String>('');
+
   var pages = const [
     HomeView(),
     MyProjectView(),
@@ -101,12 +112,203 @@ class _LandingViewState extends State<LandingView> {
         child: Container(
           margin: EdgeInsets.only(bottom: 35.h),
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              showGeneralDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  transitionDuration: const Duration(milliseconds: 700),
+                  pageBuilder: (context, anim1, anim2) => StatefulBuilder(
+                        builder: (_, setState) {
+                          return Align(
+                            alignment: Alignment.bottomCenter,
+                            child: WillPopScope(
+                              onWillPop: () async => true,
+                              child: AlertDialog(
+                                elevation: 0,
+                                insetPadding: EdgeInsets.zero,
+                                contentPadding: EdgeInsets.zero,
+                                scrollable: true,
+                                content: Column(children: [
+                                  ValueListenableBuilder<bool>(
+                                      valueListenable: isVisible,
+                                      builder: (context, value, child) {
+                                        if (value) {
+                                          return priorityContainer(
+                                              context, setState);
+                                        } else {
+                                          return Container();
+                                        }
+                                      }),
+                                  dataContainer(context, setState),
+                                ]),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                  transitionBuilder: (context, anim1, anim2, child) {
+                    return SlideTransition(
+                      position: Tween(begin: Offset(0, 1), end: Offset(0, 0))
+                          .animate(anim1),
+                      child: child,
+                    );
+                  });
+            },
             child: const Icon(Icons.add),
           ),
         ),
       ),
       body: pages[_currentIndex],
+    );
+  }
+
+  Container dataContainer(BuildContext context, StateSetter setState) {
+    String date = '';
+    String time = '';
+    String dateTime = '';
+    return Container(
+      padding: EdgeInsets.only(left: 10.w, right: 10.w),
+      height: 200.h,
+      width: MediaQuery.of(context).size.width * 1,
+      decoration: const BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8), topRight: Radius.circular(8))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: titleControler,
+            autofocus: true,
+            // focusNode: titleNode,
+            decoration: const InputDecoration(
+                hintText: "e.g. Go to hospital at 5 pm",
+                border: InputBorder.none),
+          ),
+          TextFormField(
+            controller: descriptionConreoler,
+            decoration: const InputDecoration(
+                hintText: "Description", border: InputBorder.none),
+          ),
+          DateTimePicker(
+            type: DateTimePickerType.dateTimeSeparate,
+            firstDate: DateTime(2022),
+
+            lastDate: DateTime(2030),
+            //icon: Icon(Icons.event),
+            onChanged: (value) {
+              var list = value.split(' ');
+              for (var i = 0; i < list.length; i++) {
+                if (i == 0) {
+                  date = list[i];
+                  var format = DateFormat().add_yMMMd();
+                  date = format.format(DateTime.parse(date));
+
+                  debugPrint(date);
+                } else {
+                  time = list[i];
+                  dateTime = '$date-$time';
+                  debugPrint(time);
+                }
+              }
+            },
+            onSaved: (value) {
+              debugPrint(value);
+            },
+            decoration: const InputDecoration(
+              hintText: 'Time and Date',
+              border: InputBorder.none,
+              labelText: 'Time and date',
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  isVisible.value = !isVisible.value;
+                },
+                icon: Image.asset(
+                  IconImage.priorityIcon,
+                  height: 25.h,
+                ),
+                label: Text(
+                  priorityText.value,
+                ),
+              ),
+              IconButton(
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('tasks')
+                        .doc()
+                        .set({
+                      'title': titleControler.text.trim(),
+                      'description': descriptionConreoler.text.trim(),
+                      'date': date,
+                      'time': time,
+                      'priority': priorityText.value,
+                      'is_completed': false,
+                    });
+                  },
+                  icon: Image.asset(
+                    IconImage.senIcon,
+                    height: 20.h,
+                  ))
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  AnimatedContainer priorityContainer(
+      BuildContext context, StateSetter setState) {
+    return AnimatedContainer(
+      height: 150.h,
+      width: MediaQuery.of(context).size.width * 0.4,
+      duration: const Duration(seconds: 1),
+      curve: Curves.easeInBack,
+      decoration: BoxDecoration(
+          color: AppColors.whiteColor,
+          borderRadius: BorderRadius.circular(10.r)),
+      child: ListView.builder(
+        itemCount: 4,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(bottom: 14.h),
+            child: ValueListenableBuilder<String>(
+              valueListenable: priorityText,
+              builder: (context, value, child) {
+                return InkWell(
+                  onTap: () {
+                    priorityText.value = (index + 1).toString();
+                    isVisible.value = !isVisible.value;
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CircleAvatar(
+                        radius: 8.r,
+                        backgroundColor: index == 0
+                            ? Colors.red
+                            : index == 1
+                                ? Colors.yellow
+                                : index == 2
+                                    ? Colors.blue
+                                    : Colors.grey,
+                      ),
+                      CustomText(
+                          text: "Priority ${index + 1}",
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }

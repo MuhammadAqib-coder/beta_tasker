@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+
+import '../core/common_widgets/custom_text.dart';
 
 class Practice extends StatefulWidget {
   const Practice({Key? key}) : super(key: key);
@@ -14,205 +17,32 @@ class Practice extends StatefulWidget {
 }
 
 class _PracticeState extends State<Practice> {
-  var title = TextEditingController();
-  var description = TextEditingController();
-  String priorityText = '';
-  bool isVisible = false;
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("Add Task"),
+        title: CustomText(
+            text: "Add Task", fontSize: 18.sp, fontWeight: FontWeight.w400),
       ),
-      body: Center(
-        child: Container(
-          height: 500,
-          child: Stack(children: [
-            Positioned(
-              bottom: 135.h,
-              left: 40,
-              child: Container(
-                padding: EdgeInsets.only(left: 10.w, right: 10.w),
-                height: 200.h,
-                width: MediaQuery.of(context).size.width * 0.8,
-                decoration: const BoxDecoration(
-                    color: AppColors.avatarColor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        topRight: Radius.circular(8))),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          // constraints: BoxConstraints(maxWidth: 600),
-                          hintText: "e.g. Go to hospital at 5 pm",
-                          border: InputBorder.none),
-                    ),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          // constraints: BoxConstraints(maxWidth: 600),
-                          hintText: "Description",
-                          border: InputBorder.none),
-                    ),
-                    // CalendarDatePicker(
-                    //     initialDate: DateTime.now(),
-                    //     firstDate: DateTime.now(),
-                    //     lastDate: DateTime(2039),
-                    //     onDateChanged: (date) {}),
-                    DateTimePicker(
-                      type: DateTimePickerType.dateTimeSeparate,
-                      // initialValue: DateTime.now().toString(),
-
-                      firstDate: DateTime(2022),
-                      lastDate: DateTime(2030),
-                      icon: Icon(Icons.event),
-                      decoration: InputDecoration(
-                        hintText: 'Time and Date',
-                        border: InputBorder.none,
-                        labelText: 'Time and date',
-                        // enabledBorder: OutlineInputBorder(
-                        //     borderSide: BorderSide(color: AppColors.avatarColor))
-                      ),
-                    ),
-                    // ElevatedButton.icon(
-                    //   onPressed: () {
-                    //   },
-                    //   icon: Icon(Icons.calendar_month, size: 20.r),
-                    //   label: const Text('Today'),
-                    //   style: ElevatedButton.styleFrom(
-                    //       primary: AppColors.roundButtonDarkColor),
-                    // ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              isVisible = !isVisible;
-                            });
-                          },
-                          icon: Image.asset(
-                            "assets/icons/priority.png",
-                            height: 25.h,
-                            // color: AppColors.whiteColor,
-                            // colorBlendMode: BlendMode.color,
-                          ),
-                          label: Text(priorityText),
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: Image.asset(
-                              "assets/icons/send.png",
-                              height: 20.h,
-                            ))
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-            isVisible
-                ? Positioned(
-                    top: 0,
-                    left: 100,
-                    right: 100,
-                    child: Container(
-                      height: 150,
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      decoration: BoxDecoration(
-                          color: AppColors.avatarColor,
-                          borderRadius: BorderRadius.circular(10.r)),
-                      child: ListView.builder(
-                        itemCount: 4,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: EdgeInsets.only(top: 16.h),
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  priorityText = (index + 1).toString();
-                                  isVisible = !isVisible;
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 8.r,
-                                    backgroundColor: index == 0
-                                        ? Colors.red
-                                        : index == 1
-                                            ? Colors.yellow
-                                            : index == 2
-                                                ? Colors.blue
-                                                : Colors.grey,
-                                  ),
-                                  Text('Priority ${index + 1}')
-                                ],
-                              ),
-                            ),
-                          );
-                          // ListTile(
-                          //   minVerticalPadding: 0,
-                          //   contentPadding: EdgeInsets.all(0),
-                          //   leading: CircleAvatar(
-                          //     radius: 10.r,
-                          //     backgroundColor: index == 0
-                          //         ? Colors.red
-                          //         : index == 1
-                          //             ? Colors.yellow
-                          //             : index == 2
-                          //                 ? Colors.blue
-                          //                 : Colors.grey,
-                          //   ),
-                          //   title: Text('Priority ${index + 1}'),
-                          //   onTap: () {},
-                          // );
-                        },
-                      ),
-                    ))
-                : Container()
-          ]),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          
+        },
+        child: Icon(Icons.add),
       ),
+      body: Column(),
     );
   }
 
-  getPriorityDialog() {
-    var dialog = Container(
-        padding: EdgeInsets.all(20.h),
-        height: 150.h,
-        // width: 300.w,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.r),
-            color: AppColors.dotColor),
-        child: Expanded(
-          child: ListView.builder(
-            itemCount: 4,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: CircleAvatar(
-                  radius: 10.r,
-                  backgroundColor: index == 0
-                      ? Colors.red
-                      : index == 1
-                          ? Colors.yellow
-                          : index == 2
-                              ? Colors.blue
-                              : Colors.grey,
-                ),
-                title: Text('Priority $index'),
-                onTap: () {},
-              );
-            },
-          ),
-        ));
-    showDialog(context: context, builder: (_) => dialog);
-  }
+  
+
+  
 }
+
+
 
 // ValueListenableBuilder<bool>(
 //             valueListenable: showImage,
@@ -226,3 +56,114 @@ class _PracticeState extends State<Practice> {
 //                     );
 //             },
 //           )
+// smartDialogDemo(){
+//   void _attchLocation(context) {
+//     btn({required Color color, required Function(BuildContext) onTap}) {
+//       return Row(
+//         children: [
+//           CircleAvatar(
+//             radius: 10,
+//             backgroundColor: color,
+//           )
+//         ],
+//       );
+//     }
+
+//     SmartDialog.showAttach(
+//         clickMaskDismiss: false,
+//         alignment: Alignment.topCenter,
+//         targetContext: context,
+
+//         // usePenetrate: true,
+//         // clickMaskDismiss: false,
+//         builder: (_) {
+//           return Container(
+//             decoration: BoxDecoration(
+//                 color: AppColors.avatarColor,
+//                 borderRadius: BorderRadius.circular(10.r)),
+//             height: 140.h,
+//             width: 180.w,
+//             child: ListView.builder(
+//                 itemCount: 4,
+//                 itemBuilder: (_, index) {
+//                   return Padding(
+//                     padding: EdgeInsets.only(bottom: 10.h),
+//                     child: Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                       children: [
+//                         CircleAvatar(
+//                           radius: 10.r,
+//                           backgroundColor: AppColors.blackColor,
+//                         ),
+//                         Text("priority ${index + 1}")
+//                       ],
+//                     ),
+//                   );
+//                 }),
+//           );
+//         });
+//   }
+//   SmartDialog.show(builder: (context) {
+//             return Container(
+//               padding: EdgeInsets.only(left: 10.w, right: 10.w),
+//               height: 200.h,
+//               width: MediaQuery.of(context).size.width * 1,
+//               decoration: const BoxDecoration(
+//                   color: AppColors.avatarColor,
+//                   borderRadius: BorderRadius.only(
+//                       topLeft: Radius.circular(8),
+//                       topRight: Radius.circular(8))),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   TextFormField(
+//                     autofocus: true,
+//                     // focusNode: titleNode,
+//                     decoration: const InputDecoration(
+//                         hintText: "e.g. Go to hospital at 5 pm",
+//                         border: InputBorder.none),
+//                   ),
+//                   TextFormField(
+//                     decoration: const InputDecoration(
+//                         hintText: "Description", border: InputBorder.none),
+//                   ),
+//                   DateTimePicker(
+//                     type: DateTimePickerType.dateTimeSeparate,
+//                     firstDate: DateTime(2022),
+//                     lastDate: DateTime(2030),
+//                     //icon: Icon(Icons.event),
+//                     decoration: InputDecoration(
+//                       hintText: 'Time and Date',
+//                       border: InputBorder.none,
+//                       labelText: 'Time and date',
+//                     ),
+//                   ),
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       TextButton.icon(
+//                         onPressed: () {
+//                           // setState(() {
+//                           //   isVisible = !isVisible;
+//                           // });
+//                           _attchLocation(context);
+//                         },
+//                         icon: Image.asset(
+//                           "assets/icons/priority.png",
+//                           height: 25.h,
+//                         ),
+//                         label: Text(priorityText),
+//                       ),
+//                       IconButton(
+//                           onPressed: () {},
+//                           icon: Image.asset(
+//                             "assets/icons/send.png",
+//                             height: 20.h,
+//                           ))
+//                     ],
+//                   )
+//                 ],
+//               ),
+//             );
+//           });
+// }

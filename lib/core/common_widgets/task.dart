@@ -5,7 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Task extends StatefulWidget {
-  const Task({Key? key}) : super(key: key);
+  final String title;
+  final String date;
+  final String time;
+  const Task(
+      {Key? key, required this.title, required this.date, required this.time})
+      : super(key: key);
 
   @override
   State<Task> createState() => _TaskState();
@@ -31,13 +36,13 @@ class _TaskState extends State<Task> {
           title: Padding(
             padding: EdgeInsets.only(bottom: 10.h),
             child: CustomText(
-                text: 'User Journey',
+                text: widget.title,
                 color: AppColors.blackColor,
                 fontSize: 20.sm,
                 fontWeight: FontWeight.w700),
           ),
           subtitle: CustomText(
-              text: 'Today - 02:00 PM',
+              text: widget.date,
               color: AppColors.subTitleColor,
               fontSize: 14.sm,
               fontWeight: FontWeight.w400),

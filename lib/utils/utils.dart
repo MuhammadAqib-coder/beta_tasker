@@ -43,6 +43,7 @@ class Utils {
           .pickImage(source: ImageSource.gallery, imageQuality: 80);
       if (pickFile != null) {
         showDialog(
+          barrierDismissible: false,
             context: context,
             builder: (_) {
               return Center(
