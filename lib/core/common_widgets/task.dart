@@ -8,8 +8,16 @@ class Task extends StatefulWidget {
   final String title;
   final String date;
   final String time;
+  final String docId;
+  final bool complete;
+  final VoidCallback onPressed;
   const Task(
-      {Key? key, required this.title, required this.date, required this.time})
+      {Key? key,
+      required this.title,
+      required this.date,
+      required this.docId,
+      required this.complete,
+      required this.onPressed, required this.time})
       : super(key: key);
 
   @override
@@ -31,22 +39,26 @@ class _TaskState extends State<Task> {
                 blurRadius: 5.r)
           ]),
       child: ListTile(
-          contentPadding:
-              EdgeInsets.symmetric(vertical: 10.h, horizontal: 28.w),
-          title: Padding(
-            padding: EdgeInsets.only(bottom: 10.h),
-            child: CustomText(
-                text: widget.title,
-                color: AppColors.blackColor,
-                fontSize: 20.sm,
-                fontWeight: FontWeight.w700),
-          ),
-          subtitle: CustomText(
-              text: widget.date,
-              color: AppColors.subTitleColor,
-              fontSize: 14.sm,
-              fontWeight: FontWeight.w400),
-          trailing: const RoundCheckbox()),
+        contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 28.w),
+        title: Padding(
+          padding: EdgeInsets.only(bottom: 10.h),
+          child: CustomText(
+              text: widget.title,
+              color: AppColors.blackColor,
+              fontSize: 20.sm,
+              fontWeight: FontWeight.w700),
+        ),
+        subtitle: CustomText(
+            text: "${widget.date} - ${widget.time}",
+            color: AppColors.subTitleColor,
+            fontSize: 14.sm,
+            fontWeight: FontWeight.w400),
+        trailing: RoundCheckbox(
+          complete: widget.complete,
+          docId: widget.docId,
+        ),
+        onTap: widget.onPressed,
+      ),
     );
   }
 }

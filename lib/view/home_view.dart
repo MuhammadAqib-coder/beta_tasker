@@ -1,4 +1,5 @@
 import 'package:beta_tasker/core/app_colors.dart';
+import 'package:beta_tasker/core/common_widgets/add_task.dart';
 import 'package:beta_tasker/core/common_widgets/common_app_bar.dart';
 import 'package:beta_tasker/core/common_widgets/project_task_row.dart';
 import 'package:beta_tasker/core/common_widgets/recent_projects.dart';
@@ -89,8 +90,11 @@ class _HomeViewState extends State<HomeView> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection('tasks').snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection('tasks')
+                  .where('is_completed', isEqualTo: false)
+                  .orderBy('priority',descending: false)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
@@ -100,9 +104,17 @@ class _HomeViewState extends State<HomeView> {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 8.h),
                         child: Task(
+                          complete: snapshot.data!.docs[index]['is_completed'],
+                          docId: snapshot.data!.docs[index].id,
                           date: snapshot.data!.docs[index]['date'],
                           time: snapshot.data!.docs[index]['time'],
                           title: snapshot.data!.docs[index]['title'],
+                          onPressed: () {
+                            AddTask(snapshot: snapshot.data!.docs[index])
+                                .showAddTask(
+                              context,
+                            );
+                          },
                         ),
                       );
                     },
