@@ -17,29 +17,38 @@ class Practice extends StatefulWidget {
 }
 
 class _PracticeState extends State<Practice> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: CustomText(
-            text: "Add Task", fontSize: 18.sp, fontWeight: FontWeight.w400),
+        centerTitle: true,
+        toolbarHeight: 100.h,
+        flexibleSpace: SafeArea(
+            child: Container(
+          margin: EdgeInsets.only(top: 70.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [Text('percentage'), Text('remaining days')],
+          ),
+        )),
+        title: SizedBox(
+          height: 80.h,
+          child: CustomText(
+            text: "Add Task",
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w400,
+            textAlign: TextAlign.center,
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          
-        },
+        onPressed: () {},
         child: Icon(Icons.add),
       ),
       body: Column(),
     );
   }
-
-  
-
-  
 }
 
 

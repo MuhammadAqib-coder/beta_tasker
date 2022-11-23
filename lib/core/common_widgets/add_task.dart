@@ -1,5 +1,7 @@
+import 'package:beta_tasker/data/network/provider_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -20,9 +22,12 @@ class AddTask {
   var docId = '';
   // var date = '';
   // var time = '';
+  ProviderServices? provider;
   DocumentSnapshot? snapshot;
+  final String taskKey;
+  String? proId;
 
-  AddTask({this.snapshot});
+  AddTask({this.snapshot, required this.taskKey, this.proId, this.provider});
 
   showAddTask(context) {
     titleControler.text = snapshot != null ? snapshot!['title'] : '';
@@ -156,30 +161,74 @@ class AddTask {
               ),
               IconButton(
                   onPressed: () async {
-                    if (docId.isNotEmpty) {
-                      await FirebaseFirestore.instance
-                          .collection('tasks')
-                          .doc(docId)
-                          .update({
-                        'title': titleControler.text.trim(),
-                        'description': descriptionControler.text.trim(),
-                        'date': date,
-                        'time': time,
-                        'priority': priorityText.value,
-                        'is_completed': false,
-                      });
+                    if (taskKey == 'task') {
+                      if (docId.isNotEmpty) {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .collection('tasks')
+                            .doc(docId)
+                            .update({
+                          'title': titleControler.text.trim(),
+                          'description': descriptionControler.text.trim(),
+                          'date': date,
+                          'time': time,
+                          'priority': priorityText.value,
+                          'is_completed': false,
+                        });
+                      } else {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .collection('tasks')
+                            .doc()
+                            .set({
+                          'title': titleControler.text.trim(),
+                          'description': descriptionControler.text.trim(),
+                          'date': date,
+                          'time': time,
+                          'priority': priorityText.value,
+                          'is_completed': false,
+                        });
+                      }
                     } else {
-                      await FirebaseFirestore.instance
-                          .collection('tasks')
-                          .doc()
-                          .set({
-                        'title': titleControler.text.trim(),
-                        'description': descriptionControler.text.trim(),
-                        'date': date,
-                        'time': time,
-                        'priority': priorityText.value,
-                        'is_completed': false,
-                      });
+                      if (docId.isNotEmpty) {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .collection('projects')
+                            .doc(proId)
+                            .collection('projectTasks')
+                            .doc(docId)
+                            .update({
+                          'title': titleControler.text.trim(),
+                          'description': descriptionControler.text.trim(),
+                          'date': date,
+                          'time': time,
+                          'priority': priorityText.value,
+                          'is_completed': false,
+                        });
+                      } else {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .collection('projects')
+                            .doc(proId)
+                            .collection('projectTasks')
+                            .doc()
+                            .set({
+                          'title': titleControler.text.trim(),
+                          'description': descriptionControler.text.trim(),
+                          'date': date,
+                          'time': time,
+                          'priority': priorityText.value,
+                          'is_completed': false,
+                        });
+                        await provider!.updateCompleteList(proId!);
+                        await provider!.updateInCompleteList(proId!);
+                        provider!.calculatePercentage();
+                      }
+                      //
                     }
                     // ignore: use_build_context_synchronously
                     Navigator.pop(context);

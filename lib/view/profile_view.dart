@@ -44,6 +44,7 @@ class _ProfileViewState extends State<ProfileView>
   final _formKey = GlobalKey<FormState>();
 
   String url = '';
+  var map = <String, dynamic>{};
   late AnimationController _controller;
   bool shimmmerAffect = false;
 
@@ -58,6 +59,7 @@ class _ProfileViewState extends State<ProfileView>
 
   getData() async {
     url = await CloudDataService.createUserData();
+    
     setState(() {});
   }
 

@@ -1,11 +1,14 @@
 import 'package:beta_tasker/core/app_colors.dart';
 import 'package:beta_tasker/core/common_widgets/add_task.dart';
 import 'package:beta_tasker/core/common_widgets/common_app_bar.dart';
+import 'package:beta_tasker/core/common_widgets/custom_text.dart';
 import 'package:beta_tasker/core/common_widgets/project_task_row.dart';
 import 'package:beta_tasker/core/common_widgets/recent_projects.dart';
 import 'package:beta_tasker/core/common_widgets/search_field.dart';
 import 'package:beta_tasker/core/common_widgets/task.dart';
+import 'package:beta_tasker/data/network/cloud_data_service.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
+import 'package:beta_tasker/view/project_detail_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -28,12 +31,20 @@ class _HomeViewState extends State<HomeView> {
         action: PopupMenuButton(
             itemBuilder: (context) {
               return [
-                PopupMenuItem(child: Text('notification')),
+                PopupMenuItem(
+                    onTap: () {},
+                    child: CustomText(
+                        text: "Projects",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400)),
                 PopupMenuItem(
                     onTap: () {
                       FirebaseAuth.instance.signOut();
                     },
-                    child: Text('Logout'))
+                    child: CustomText(
+                        text: "Logout",
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400))
               ];
             },
             icon: const Icon(
@@ -58,7 +69,7 @@ class _HomeViewState extends State<HomeView> {
                 ProjectTaskRow(
                   text: 'Recent Project',
                   onPressed: () {
-                    Navigator.pushNamed(context, RoutesName.recentProjectView);
+                    Navigator.pushNamed(context, RoutesName.myProjectView);
                   },
                 ),
               ],
@@ -66,16 +77,43 @@ class _HomeViewState extends State<HomeView> {
           ),
           Container(
             height: 140.h,
-            child: PageView.builder(
-              pageSnapping: false,
-              controller: _pageControler,
-              scrollDirection: Axis.horizontal,
-              itemCount: 3,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(right: 12.w),
-                  child: RecentProjects(),
-                );
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection('projects')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return PageView.builder(
+                    pageSnapping: false,
+                    controller: _pageControler,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.only(right: 12.w),
+                        child: RecentProjects(
+                          proId: snapshot.data!.docs[index].id,
+                          snapshot: snapshot.data!.docs[index],
+                          onPressed: (value) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => ProjectDetailView(
+                                        proSnapshot: snapshot.data!.docs[index],
+                                        remianingDays: value.toString()))).then(
+                                (value) => setState(() {}));
+                          },
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
               },
             ),
           ),
@@ -90,11 +128,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('tasks')
-                  .where('is_completed', isEqualTo: false)
-                  .orderBy('priority',descending: false)
-                  .snapshots(),
+              stream: CloudDataService.getIncompleteTaskStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return ListView.builder(
@@ -104,13 +138,16 @@ class _HomeViewState extends State<HomeView> {
                       return Padding(
                         padding: EdgeInsets.only(bottom: 8.h),
                         child: Task(
+                          priority: snapshot.data!.docs[index]['priority'],
                           complete: snapshot.data!.docs[index]['is_completed'],
                           docId: snapshot.data!.docs[index].id,
                           date: snapshot.data!.docs[index]['date'],
                           time: snapshot.data!.docs[index]['time'],
                           title: snapshot.data!.docs[index]['title'],
                           onPressed: () {
-                            AddTask(snapshot: snapshot.data!.docs[index])
+                            AddTask(
+                                    snapshot: snapshot.data!.docs[index],
+                                    taskKey: 'task')
                                 .showAddTask(
                               context,
                             );
@@ -120,7 +157,7 @@ class _HomeViewState extends State<HomeView> {
                     },
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }

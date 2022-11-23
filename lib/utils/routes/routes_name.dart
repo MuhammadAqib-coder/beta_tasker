@@ -15,4 +15,7 @@ class RoutesName {
   static const String signupEmailPasswordView = 'signup_email_password_view';
   static const String signinView = 'sign_in_view';
   static const String notificationView = 'notification_view';
+  static const String addProjectView = 'add_project_view';
+  static const String projectDetailView = 'project_detail_view';
+
 }

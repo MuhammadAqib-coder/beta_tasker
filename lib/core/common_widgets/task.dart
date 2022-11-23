@@ -1,6 +1,7 @@
 import 'package:beta_tasker/core/app_colors.dart';
 import 'package:beta_tasker/core/common_widgets/custom_text.dart';
 import 'package:beta_tasker/core/common_widgets/round_check_box.dart';
+import 'package:beta_tasker/data/network/provider_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,13 +12,20 @@ class Task extends StatefulWidget {
   final String docId;
   final bool complete;
   final VoidCallback onPressed;
-  const Task(
+  String? proId;
+  String? priority;
+  ProviderServices? provider;
+  Task(
       {Key? key,
       required this.title,
       required this.date,
       required this.docId,
       required this.complete,
-      required this.onPressed, required this.time})
+      required this.onPressed,
+      required this.time,
+      this.priority = '',
+      this.provider,
+      this.proId})
       : super(key: key);
 
   @override
@@ -54,8 +62,11 @@ class _TaskState extends State<Task> {
             fontSize: 14.sm,
             fontWeight: FontWeight.w400),
         trailing: RoundCheckbox(
+          priority: widget.priority!,
           complete: widget.complete,
           docId: widget.docId,
+          proId: widget.proId,
+          provider: widget.provider,
         ),
         onTap: widget.onPressed,
       ),

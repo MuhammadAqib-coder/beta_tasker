@@ -1,7 +1,7 @@
-
 import 'package:beta_tasker/core/app_colors.dart';
 import 'package:beta_tasker/core/common_widgets/add_task.dart';
 import 'package:beta_tasker/images/icons/icon_image.dart';
+import 'package:beta_tasker/utils/routes/routes_name.dart';
 import 'package:beta_tasker/view/home_view.dart';
 import 'package:beta_tasker/view/my_project_view.dart';
 import 'package:beta_tasker/view/profile_view.dart';
@@ -33,7 +33,7 @@ class _LandingViewState extends State<LandingView> {
       appBar: AppBar(
           toolbarHeight: 0.sp,
           elevation: 0.sp,
-          systemOverlayStyle: SystemUiOverlayStyle(
+          systemOverlayStyle: const SystemUiOverlayStyle(
               statusBarIconBrightness: Brightness.dark,
               statusBarColor: AppColors.whiteColor)),
       bottomNavigationBar: BottomNavigationBar(
@@ -99,7 +99,11 @@ class _LandingViewState extends State<LandingView> {
           margin: EdgeInsets.only(bottom: 35.h),
           child: FloatingActionButton(
             onPressed: () {
-              AddTask().showAddTask(context);
+              if (_currentIndex == 0) {
+                AddTask(taskKey: 'task').showAddTask(context);
+              } else if (_currentIndex == 1) {
+                Navigator.pushNamed(context, RoutesName.addProjectView);
+              }
             },
             child: const Icon(Icons.add),
           ),

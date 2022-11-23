@@ -6,6 +6,7 @@ import 'package:beta_tasker/view/onboarding_view/onboarding3.dart';
 import 'package:beta_tasker/view/profile_view.dart';
 import 'package:flutter/material.dart';
 
+import '../../view/add_project_view.dart';
 import '../../view/create_account_view/signUp_email_password_view.dart';
 import '../../view/create_account_view/signup_option_view.dart';
 import '../../view/forget_password_view.dart';
@@ -13,6 +14,7 @@ import '../../view/home_view.dart';
 import '../../view/landing_view.dart';
 import '../../view/my_project_view.dart';
 import '../../view/notification_view.dart';
+import '../../view/project_detail_view.dart';
 import '../../view/recent_projects_view.dart';
 import '../../view/signin_view.dart';
 import '../../view/splash_view.dart';
@@ -53,9 +55,15 @@ class Routes {
       case RoutesName.signinView:
         return MaterialPageRoute(
             builder: (_) => const SigninView());
-            case RoutesName.notificationView:
+      case RoutesName.notificationView:
         return MaterialPageRoute(
             builder: (_) => const NotificationView());
+      case RoutesName.addProjectView:
+        return MaterialPageRoute(
+            builder: (_) => const AddProjectView());   
+      // case RoutesName.projectDetailView:
+      //   return MaterialPageRoute(
+      //       builder: (_) =>  ProjectDetailView());         
       default:
         return MaterialPageRoute(
             builder: (_) => const Scaffold(

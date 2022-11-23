@@ -5,7 +5,6 @@ import 'package:beta_tasker/core/common_widgets/round_button.dart';
 import 'package:beta_tasker/images/icons/icon_image.dart';
 import 'package:beta_tasker/images/splash_image/splash_image.dart';
 import 'package:beta_tasker/utils/routes/routes_name.dart';
-import 'package:beta_tasker/view/create_account_view/signUp_email_password_view.dart';
 import 'package:beta_tasker/view_model/auth_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,7 +48,7 @@ class _SignupOptionViewState extends State<SignupOptionView> {
               color: AppColors.whiteColor,
               textColor: AppColors.blackColor,
               shadowColor: AppColors.whiteSmokeColor,
-              onPressed: () async{
+              onPressed: () async {
                 await _authViewModel.googleSignup(context);
               }),
           FixHeightWidth.height12,
@@ -59,7 +58,7 @@ class _SignupOptionViewState extends State<SignupOptionView> {
               color: AppColors.whiteColor,
               textColor: AppColors.blackColor,
               shadowColor: AppColors.whiteSmokeColor,
-              onPressed: ()async {
+              onPressed: () async {
                 await _authViewModel.facebookSignup(context);
               }),
           FixHeightWidth.height12,

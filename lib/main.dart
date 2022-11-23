@@ -1,5 +1,6 @@
 import 'package:beta_tasker/core/app_colors.dart';
 import 'package:beta_tasker/data/network/network_auth_service.dart';
+import 'package:beta_tasker/data/network/provider_services.dart';
 import 'package:beta_tasker/utils/routes/routes.dart';
 import 'package:beta_tasker/view/create_account_view/signup_option_view.dart';
 import 'package:beta_tasker/view/landing_view.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,7 +54,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
       splitScreenMode: true,
       designSize: const Size(360, 679),
       child: //Practice(),
-       StreamBuilder<User?>(
+          StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -72,19 +74,25 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         },
       ),
       builder: (context, child) {
-        return MaterialApp(
-          // navigatorObservers: [FlutterSmartDialog.observer],
-          // builder: FlutterSmartDialog.init(
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider<ProviderServices>(
+                create: (context) => ProviderServices())
+          ],
+          child: MaterialApp(
+            // navigatorObservers: [FlutterSmartDialog.observer],
+            // builder: FlutterSmartDialog.init(
 
-          // ),
-          debugShowCheckedModeBanner: false,
-          title: 'Beta Tasker',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
+            // ),
+            debugShowCheckedModeBanner: false,
+            title: 'Beta Tasker',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+            ),
+            // initialRoute: RoutesName.signupOptionView,
+            onGenerateRoute: Routes.generateRoute,
+            home: child,
           ),
-          // initialRoute: RoutesName.signupOptionView,
-          onGenerateRoute: Routes.generateRoute,
-          home: child,
         );
       },
     );
